@@ -1,5 +1,5 @@
 /*
- * MessagePack for Python packing routine
+ * UBJSON for Python packing routine
  *
  * Copyright (C) 2009 Naoki INADA
  *
@@ -30,50 +30,50 @@ extern "C" {
 #define inline __inline
 #endif
 
-typedef struct msgpack_packer {
+typedef struct ubjson_packer {
     char *buf;
     size_t length;
     size_t buf_size;
     bool use_bin_type;
-} msgpack_packer;
+} ubjson_packer;
 
 typedef struct Packer Packer;
 
-static inline int msgpack_pack_int(msgpack_packer* pk, int d);
-static inline int msgpack_pack_long(msgpack_packer* pk, long d);
-static inline int msgpack_pack_long_long(msgpack_packer* pk, long long d);
-static inline int msgpack_pack_unsigned_short(msgpack_packer* pk, unsigned short d);
-static inline int msgpack_pack_unsigned_int(msgpack_packer* pk, unsigned int d);
-static inline int msgpack_pack_unsigned_long(msgpack_packer* pk, unsigned long d);
-//static inline int msgpack_pack_unsigned_long_long(msgpack_packer* pk, unsigned long long d);
+static inline int ubjson_pack_int(ubjson_packer* pk, int d);
+static inline int ubjson_pack_long(ubjson_packer* pk, long d);
+static inline int ubjson_pack_long_long(ubjson_packer* pk, long long d);
+static inline int ubjson_pack_unsigned_short(ubjson_packer* pk, unsigned short d);
+static inline int ubjson_pack_unsigned_int(ubjson_packer* pk, unsigned int d);
+static inline int ubjson_pack_unsigned_long(ubjson_packer* pk, unsigned long d);
+//static inline int ubjson_pack_unsigned_long_long(ubjson_packer* pk, unsigned long long d);
 
-static inline int msgpack_pack_uint8(msgpack_packer* pk, uint8_t d);
-static inline int msgpack_pack_uint16(msgpack_packer* pk, uint16_t d);
-static inline int msgpack_pack_uint32(msgpack_packer* pk, uint32_t d);
-static inline int msgpack_pack_uint64(msgpack_packer* pk, uint64_t d);
-static inline int msgpack_pack_int8(msgpack_packer* pk, int8_t d);
-static inline int msgpack_pack_int16(msgpack_packer* pk, int16_t d);
-static inline int msgpack_pack_int32(msgpack_packer* pk, int32_t d);
-static inline int msgpack_pack_int64(msgpack_packer* pk, int64_t d);
+static inline int ubjson_pack_uint8(ubjson_packer* pk, uint8_t d);
+static inline int ubjson_pack_uint16(ubjson_packer* pk, uint16_t d);
+static inline int ubjson_pack_uint32(ubjson_packer* pk, uint32_t d);
+static inline int ubjson_pack_uint64(ubjson_packer* pk, uint64_t d);
+static inline int ubjson_pack_int8(ubjson_packer* pk, int8_t d);
+static inline int ubjson_pack_int16(ubjson_packer* pk, int16_t d);
+static inline int ubjson_pack_int32(ubjson_packer* pk, int32_t d);
+static inline int ubjson_pack_int64(ubjson_packer* pk, int64_t d);
 
-static inline int msgpack_pack_float(msgpack_packer* pk, float d);
-static inline int msgpack_pack_double(msgpack_packer* pk, double d);
+static inline int ubjson_pack_float(ubjson_packer* pk, float d);
+static inline int ubjson_pack_double(ubjson_packer* pk, double d);
 
-static inline int msgpack_pack_nil(msgpack_packer* pk);
-static inline int msgpack_pack_true(msgpack_packer* pk);
-static inline int msgpack_pack_false(msgpack_packer* pk);
+static inline int ubjson_pack_nil(ubjson_packer* pk);
+static inline int ubjson_pack_true(ubjson_packer* pk);
+static inline int ubjson_pack_false(ubjson_packer* pk);
 
-static inline int msgpack_pack_array(msgpack_packer* pk, unsigned int n);
+static inline int ubjson_pack_array(ubjson_packer* pk, unsigned int n);
 
-static inline int msgpack_pack_map(msgpack_packer* pk, unsigned int n);
+static inline int ubjson_pack_map(ubjson_packer* pk, unsigned int n);
 
-static inline int msgpack_pack_raw(msgpack_packer* pk, size_t l);
-static inline int msgpack_pack_bin(msgpack_packer* pk, size_t l);
-static inline int msgpack_pack_raw_body(msgpack_packer* pk, const void* b, size_t l);
+static inline int ubjson_pack_raw(ubjson_packer* pk, size_t l);
+static inline int ubjson_pack_bin(ubjson_packer* pk, size_t l);
+static inline int ubjson_pack_raw_body(ubjson_packer* pk, const void* b, size_t l);
 
-static inline int msgpack_pack_ext(msgpack_packer* pk, char typecode, size_t l);
+static inline int ubjson_pack_ext(ubjson_packer* pk, char typecode, size_t l);
 
-static inline int msgpack_pack_write(msgpack_packer* pk, const char *data, size_t l)
+static inline int ubjson_pack_write(ubjson_packer* pk, const char *data, size_t l)
 {
     char* buf = pk->buf;
     size_t bs = pk->buf_size;
@@ -93,8 +93,8 @@ static inline int msgpack_pack_write(msgpack_packer* pk, const char *data, size_
     return 0;
 }
 
-#define msgpack_pack_append_buffer(user, buf, len) \
-        return msgpack_pack_write(user, (const char*)buf, len)
+#define ubjson_pack_append_buffer(user, buf, len) \
+        return ubjson_pack_write(user, (const char*)buf, len)
 
 #include "pack_template.h"
 
