@@ -8,15 +8,19 @@ from pandas._config.localization import can_set_locale, get_locales, set_locale
 
 from pandas.compat import is_platform_windows
 
+import pandas as pd
+
 _all_locales = get_locales() or []
 _current_locale = locale.getlocale()
 
 # Don't run any of these tests if we are on Windows or have no locales.
-pytestmark = pytest.mark.skipif(is_platform_windows() or not _all_locales,
-                                reason="Need non-Windows and locales")
+pytestmark = pytest.mark.skipif(
+    is_platform_windows() or not _all_locales, reason="Need non-Windows and locales"
+)
 
 _skip_if_only_one_locale = pytest.mark.skipif(
-    len(_all_locales) <= 1, reason="Need multiple locales for meaningful test")
+    len(_all_locales) <= 1, reason="Need multiple locales for meaningful test"
+)
 
 
 def test_can_set_locale_valid_set():
@@ -54,20 +58,20 @@ def test_get_locales_prefix():
 
 
 @_skip_if_only_one_locale
-def test_set_locale():
+@pytest.mark.parametrize(
+    "lang,enc",
+    [
+        ("it_CH", "UTF-8"),
+        ("en_US", "ascii"),
+        ("zh_CN", "GB2312"),
+        ("it_IT", "ISO-8859-1"),
+    ],
+)
+def test_set_locale(lang, enc):
     if all(x is None for x in _current_locale):
         # Not sure why, but on some Travis runs with pytest,
         #  getlocale() returned (None, None).
         pytest.skip("Current locale is not set.")
-
-    locale_override = os.environ.get("LOCALE_OVERRIDE", None)
-
-    if locale_override is None:
-        lang, enc = "it_CH", "UTF-8"
-    elif locale_override == "C":
-        lang, enc = "en_US", "ascii"
-    else:
-        lang, enc = locale_override.split(".")
 
     enc = codecs.lookup(enc).name
     new_locale = lang, enc
@@ -89,3 +93,13 @@ def test_set_locale():
     # Once we exit the "with" statement, locale should be back to what it was.
     current_locale = locale.getlocale()
     assert current_locale == _current_locale
+
+
+def test_encoding_detected():
+    system_locale = os.environ.get("LC_ALL")
+    system_encoding = system_locale.split(".")[-1] if system_locale else "utf-8"
+
+    assert (
+        codecs.lookup(pd.options.display.encoding).name
+        == codecs.lookup(system_encoding).name
+    )

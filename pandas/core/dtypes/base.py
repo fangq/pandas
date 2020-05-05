@@ -1,11 +1,18 @@
-"""Extend pandas with custom array types"""
-from typing import List, Optional, Tuple, Type
+"""
+Extend pandas with custom array types.
+"""
+
+from typing import TYPE_CHECKING, Any, List, Optional, Tuple, Type
 
 import numpy as np
 
+from pandas._typing import DtypeObj
 from pandas.errors import AbstractMethodError
 
 from pandas.core.dtypes.generic import ABCDataFrame, ABCIndexClass, ABCSeries
+
+if TYPE_CHECKING:
+    from pandas.core.arrays import ExtensionArray  # noqa: F401
 
 
 class ExtensionDtype:
@@ -26,13 +33,13 @@ class ExtensionDtype:
 
     * type
     * name
-    * construct_from_string
 
-    The following attributes influence the behavior of the dtype in
+    The following attributes and methods influence the behavior of the dtype in
     pandas operations
 
     * _is_numeric
     * _is_boolean
+    * _get_common_dtype
 
     Optionally one can override construct_array_type for construction
     with the name of this dtype via the Registry. See
@@ -63,18 +70,32 @@ class ExtensionDtype:
        Added ``_metadata``, ``__hash__``, and changed the default definition
        of ``__eq__``.
 
+    For interaction with Apache Arrow (pyarrow), a ``__from_arrow__`` method
+    can be implemented: this method receives a pyarrow Array or ChunkedArray
+    as only argument and is expected to return the appropriate pandas
+    ExtensionArray for this dtype and the passed values::
+
+        class ExtensionDtype:
+
+            def __from_arrow__(
+                self, array: Union[pyarrow.Array, pyarrow.ChunkedArray]
+            ) -> ExtensionArray:
+                ...
+
     This class does not inherit from 'abc.ABCMeta' for performance reasons.
     Methods and properties required by the interface raise
     ``pandas.errors.AbstractMethodError`` and no ``register`` method is
     provided for registering virtual subclasses.
     """
-    _metadata = ()  # type: Tuple[str, ...]
 
-    def __str__(self):
+    _metadata: Tuple[str, ...] = ()
+
+    def __str__(self) -> str:
         return self.name
 
-    def __eq__(self, other):
-        """Check whether 'other' is equal to self.
+    def __eq__(self, other: Any) -> bool:
+        """
+        Check whether 'other' is equal to self.
 
         By default, 'other' is considered equal if either
 
@@ -98,19 +119,18 @@ class ExtensionDtype:
                 return False
         if isinstance(other, type(self)):
             return all(
-                getattr(self, attr) == getattr(other, attr)
-                for attr in self._metadata
+                getattr(self, attr) == getattr(other, attr) for attr in self._metadata
             )
         return False
 
-    def __hash__(self):
+    def __hash__(self) -> int:
         return hash(tuple(getattr(self, attr) for attr in self._metadata))
 
-    def __ne__(self, other):
+    def __ne__(self, other: Any) -> bool:
         return not self.__eq__(other)
 
     @property
-    def na_value(self):
+    def na_value(self) -> object:
         """
         Default NA value to use for this type.
 
@@ -146,7 +166,7 @@ class ExtensionDtype:
         --------
         numpy.dtype.kind
         """
-        return 'O'
+        return "O"
 
     @property
     def name(self) -> str:
@@ -159,7 +179,8 @@ class ExtensionDtype:
 
     @property
     def names(self) -> Optional[List[str]]:
-        """Ordered list of field names, or None if there are no fields.
+        """
+        Ordered list of field names, or None if there are no fields.
 
         This is for compatibility with NumPy arrays, and may be removed in the
         future.
@@ -167,9 +188,9 @@ class ExtensionDtype:
         return None
 
     @classmethod
-    def construct_array_type(cls):
+    def construct_array_type(cls) -> Type["ExtensionArray"]:
         """
-        Return the array type associated with this dtype
+        Return the array type associated with this dtype.
 
         Returns
         -------
@@ -217,19 +238,25 @@ class ExtensionDtype:
         ...     if match:
         ...         return cls(**match.groupdict())
         ...     else:
-        ...         raise TypeError("Cannot construct a '{}' from "
-        ...                         "'{}'".format(cls.__name__, string))
+        ...         raise TypeError(
+        ...             f"Cannot construct a '{cls.__name__}' from '{string}'"
+        ...         )
         """
         if not isinstance(string, str):
-            raise TypeError("Expects a string, got {}".format(type(string)))
+            raise TypeError(
+                f"'construct_from_string' expects a string, got {type(string)}"
+            )
+        # error: Non-overlapping equality check (left operand type: "str", right
+        #  operand type: "Callable[[ExtensionDtype], str]")  [comparison-overlap]
+        assert isinstance(cls.name, str), (cls, type(cls.name))
         if string != cls.name:
-            raise TypeError("Cannot construct a '{}' from '{}'".format(
-                cls.__name__, string))
+            raise TypeError(f"Cannot construct a '{cls.__name__}' from '{string}'")
         return cls()
 
     @classmethod
-    def is_dtype(cls, dtype) -> bool:
-        """Check if we match 'dtype'.
+    def is_dtype(cls, dtype: object) -> bool:
+        """
+        Check if we match 'dtype'.
 
         Parameters
         ----------
@@ -238,7 +265,7 @@ class ExtensionDtype:
 
         Returns
         -------
-        is_dtype : bool
+        bool
 
         Notes
         -----
@@ -250,10 +277,9 @@ class ExtensionDtype:
         3. ``dtype`` has a ``dtype`` attribute, and any of the above
            conditions is true for ``dtype.dtype``.
         """
-        dtype = getattr(dtype, 'dtype', dtype)
+        dtype = getattr(dtype, "dtype", dtype)
 
-        if isinstance(dtype, (ABCSeries, ABCIndexClass,
-                              ABCDataFrame, np.dtype)):
+        if isinstance(dtype, (ABCSeries, ABCIndexClass, ABCDataFrame, np.dtype)):
             # https://github.com/pandas-dev/pandas/issues/22960
             # avoid passing data to `construct_from_string`. This could
             # cause a FutureWarning from numpy about failing elementwise
@@ -263,10 +289,12 @@ class ExtensionDtype:
             return False
         elif isinstance(dtype, cls):
             return True
-        try:
-            return cls.construct_from_string(dtype) is not None
-        except TypeError:
-            return False
+        if isinstance(dtype, str):
+            try:
+                return cls.construct_from_string(dtype) is not None
+            except TypeError:
+                return False
+        return False
 
     @property
     def _is_numeric(self) -> bool:
@@ -296,3 +324,31 @@ class ExtensionDtype:
         bool
         """
         return False
+
+    def _get_common_dtype(self, dtypes: List[DtypeObj]) -> Optional[DtypeObj]:
+        """
+        Return the common dtype, if one exists.
+
+        Used in `find_common_type` implementation. This is for example used
+        to determine the resulting dtype in a concat operation.
+
+        If no common dtype exists, return None (which gives the other dtypes
+        the chance to determine a common dtype). If all dtypes in the list
+        return None, then the common dtype will be "object" dtype (this means
+        it is never needed to return "object" dtype from this method itself).
+
+        Parameters
+        ----------
+        dtypes : list of dtypes
+            The dtypes for which to determine a common dtype. This is a list
+            of np.dtype or ExtensionDtype instances.
+
+        Returns
+        -------
+        Common dtype (np.dtype or ExtensionDtype) or None
+        """
+        if len(set(dtypes)) == 1:
+            # only itself
+            return self
+        else:
+            return None

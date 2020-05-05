@@ -3,7 +3,7 @@
 .. _api.indexing:
 
 =============
-Index Objects
+Index objects
 =============
 
 Index
@@ -32,7 +32,6 @@ Properties
    Index.has_duplicates
    Index.hasnans
    Index.dtype
-   Index.dtype_str
    Index.inferred_type
    Index.is_all_dates
    Index.shape
@@ -42,13 +41,10 @@ Properties
    Index.ndim
    Index.size
    Index.empty
-   Index.strides
-   Index.itemsize
-   Index.base
    Index.T
    Index.memory_usage
 
-Modifying and Computations
+Modifying and computations
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 .. autosummary::
    :toctree: api/
@@ -93,10 +89,9 @@ Compatibility with MultiIndex
    :toctree: api/
 
    Index.set_names
-   Index.is_lexsorted_for_tuple
    Index.droplevel
 
-Missing Values
+Missing values
 ~~~~~~~~~~~~~~
 .. autosummary::
    :toctree: api/
@@ -156,8 +151,6 @@ Selecting
 
    Index.asof
    Index.asof_locs
-   Index.contains
-   Index.get_duplicates
    Index.get_indexer
    Index.get_indexer_for
    Index.get_indexer_non_unique
@@ -165,8 +158,6 @@ Selecting
    Index.get_loc
    Index.get_slice_bound
    Index.get_value
-   Index.get_values
-   Index.set_value
    Index.isin
    Index.slice_indexer
    Index.slice_locs
@@ -205,7 +196,7 @@ CategoricalIndex
 
    CategoricalIndex
 
-Categorical Components
+Categorical components
 ~~~~~~~~~~~~~~~~~~~~~~
 .. autosummary::
    :toctree: api/
@@ -222,7 +213,7 @@ Categorical Components
    CategoricalIndex.as_ordered
    CategoricalIndex.as_unordered
 
-Modifying and Computations
+Modifying and computations
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 .. autosummary::
    :toctree: api/
@@ -240,7 +231,7 @@ IntervalIndex
 
    IntervalIndex
 
-IntervalIndex Components
+IntervalIndex components
 ~~~~~~~~~~~~~~~~~~~~~~~~
 .. autosummary::
    :toctree: api/
@@ -248,18 +239,19 @@ IntervalIndex Components
    IntervalIndex.from_arrays
    IntervalIndex.from_tuples
    IntervalIndex.from_breaks
-   IntervalIndex.contains
    IntervalIndex.left
    IntervalIndex.right
    IntervalIndex.mid
    IntervalIndex.closed
    IntervalIndex.length
    IntervalIndex.values
+   IntervalIndex.is_empty
    IntervalIndex.is_non_overlapping_monotonic
    IntervalIndex.is_overlapping
    IntervalIndex.get_loc
    IntervalIndex.get_indexer
    IntervalIndex.set_closed
+   IntervalIndex.contains
    IntervalIndex.overlaps
    IntervalIndex.to_tuples
 
@@ -278,7 +270,7 @@ MultiIndex
 
    IndexSlice
 
-MultiIndex Constructors
+MultiIndex constructors
 ~~~~~~~~~~~~~~~~~~~~~~~
 .. autosummary::
    :toctree: api/
@@ -288,7 +280,7 @@ MultiIndex Constructors
    MultiIndex.from_product
    MultiIndex.from_frame
 
-MultiIndex Properties
+MultiIndex properties
 ~~~~~~~~~~~~~~~~~~~~~
 .. autosummary::
    :toctree: api/
@@ -299,14 +291,13 @@ MultiIndex Properties
    MultiIndex.nlevels
    MultiIndex.levshape
 
-MultiIndex Components
+MultiIndex components
 ~~~~~~~~~~~~~~~~~~~~~
 .. autosummary::
    :toctree: api/
 
    MultiIndex.set_levels
    MultiIndex.set_codes
-   MultiIndex.to_hierarchical
    MultiIndex.to_flat_index
    MultiIndex.to_frame
    MultiIndex.is_lexsorted
@@ -316,12 +307,13 @@ MultiIndex Components
    MultiIndex.reorder_levels
    MultiIndex.remove_unused_levels
 
-MultiIndex Selecting
+MultiIndex selecting
 ~~~~~~~~~~~~~~~~~~~~
 .. autosummary::
    :toctree: api/
 
    MultiIndex.get_loc
+   MultiIndex.get_locs
    MultiIndex.get_loc_level
    MultiIndex.get_indexer
    MultiIndex.get_level_values
@@ -336,7 +328,7 @@ DatetimeIndex
 
    DatetimeIndex
 
-Time/Date Components
+Time/date components
 ~~~~~~~~~~~~~~~~~~~~
 .. autosummary::
    :toctree: api/

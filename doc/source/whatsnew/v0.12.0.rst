@@ -1,7 +1,7 @@
 .. _whatsnew_0120:
 
-v0.12.0 (July 24, 2013)
-------------------------
+Version 0.12.0 (July 24, 2013)
+------------------------------
 
 {{ header }}
 
@@ -177,8 +177,8 @@ API changes
     ``__repr__``). Plus string safety throughout. Now employed in many places
     throughout the pandas library. (:issue:`4090`, :issue:`4092`)
 
-I/O Enhancements
-~~~~~~~~~~~~~~~~
+IO enhancements
+~~~~~~~~~~~~~~~
 
   - ``pd.read_html()`` can now parse HTML strings, files or urls and return
     DataFrames, courtesy of @cpcloud. (:issue:`3477`, :issue:`3605`, :issue:`3606`, :issue:`3616`).
@@ -236,7 +236,7 @@ I/O Enhancements
 
       .. ipython:: python
 
-         from pandas.util.testing import makeCustomDataframe as mkdf
+         from pandas._testing import makeCustomDataframe as mkdf
          df = mkdf(5, 3, r_idx_nlevels=2, c_idx_nlevels=4)
          df.to_csv('mi.csv')
          print(open('mi.csv').read())
@@ -282,7 +282,7 @@ I/O Enhancements
   - ``read_csv`` will now throw a more informative error message when a file
     contains no columns, e.g., all newline characters
 
-Other Enhancements
+Other enhancements
 ~~~~~~~~~~~~~~~~~~
 
   - ``DataFrame.replace()`` now allows regular expressions on contained
@@ -371,7 +371,7 @@ Other Enhancements
     is detected (:issue:`4214`)
 
 
-Experimental Features
+Experimental features
 ~~~~~~~~~~~~~~~~~~~~~
 
   - Added experimental ``CustomBusinessDay`` class to support ``DateOffsets``
@@ -398,7 +398,7 @@ Experimental Features
       dts = pd.date_range(dt, periods=5, freq=bday_egypt)
       print(pd.Series(dts.weekday, dts).map(pd.Series('Mon Tue Wed Thu Fri Sat Sun'.split())))
 
-Bug Fixes
+Bug fixes
 ~~~~~~~~~
 
   - Plotting functions now raise a ``TypeError`` before trying to plot anything
@@ -417,6 +417,7 @@ Bug Fixes
     original ``Series`` or ``NaN``. For example,
 
     .. ipython:: python
+        :okwarning:
 
         strs = 'go', 'bow', 'joe', 'slow'
         ds = pd.Series(strs)

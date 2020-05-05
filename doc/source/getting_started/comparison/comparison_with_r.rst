@@ -6,9 +6,9 @@ Comparison with R / R libraries
 *******************************
 
 Since ``pandas`` aims to provide a lot of the data manipulation and analysis
-functionality that people use `R <http://www.r-project.org/>`__ for, this page
+functionality that people use `R <https://www.r-project.org/>`__ for, this page
 was started to provide a more detailed look at the `R language
-<http://en.wikipedia.org/wiki/R_(programming_language)>`__ and its many third
+<https://en.wikipedia.org/wiki/R_(programming_language)>`__ and its many third
 party libraries as they relate to ``pandas``. In comparisons with R and CRAN
 libraries, we care about the following things:
 
@@ -26,7 +26,7 @@ use HDF5 files, see :ref:`io.external_compatibility` for an
 example.
 
 
-Quick Reference
+Quick reference
 ---------------
 
 We'll start off with a quick reference guide pairing some common R
@@ -35,7 +35,7 @@ operations using `dplyr
 pandas equivalents.
 
 
-Querying, Filtering, Sampling
+Querying, filtering, sampling
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 ===========================================  ===========================================
@@ -81,11 +81,11 @@ R                                            pandas
 ===========================================  ===========================================
 ``select(df, col_one = col1)``               ``df.rename(columns={'col1': 'col_one'})['col_one']``
 ``rename(df, col_one = col1)``               ``df.rename(columns={'col1': 'col_one'})``
-``mutate(df, c=a-b)``                        ``df.assign(c=df.a-df.b)``
+``mutate(df, c=a-b)``                        ``df.assign(c=df['a']-df['b'])``
 ===========================================  ===========================================
 
 
-Grouping and Summarizing
+Grouping and summarizing
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
 ==============================================  ===========================================
@@ -258,8 +258,8 @@ index/slice as well as standard boolean indexing:
 
    df = pd.DataFrame({'a': np.random.randn(10), 'b': np.random.randn(10)})
    df.query('a <= b')
-   df[df.a <= df.b]
-   df.loc[df.a <= df.b]
+   df[df['a'] <= df['b']]
+   df.loc[df['a'] <= df['b']]
 
 For more details and examples see :ref:`the query documentation
 <indexing.query>`.
@@ -284,7 +284,7 @@ In ``pandas`` the equivalent expression, using the
 
    df = pd.DataFrame({'a': np.random.randn(10), 'b': np.random.randn(10)})
    df.eval('a + b')
-   df.a + df.b  # same as the previous expression
+   df['a'] + df['b']  # same as the previous expression
 
 In certain cases :meth:`~pandas.DataFrame.eval` will be much faster than
 evaluation in pure Python. For more details and examples see :ref:`the eval
@@ -517,37 +517,37 @@ For more details and examples see :ref:`categorical introduction <categorical>` 
 
 
 .. |c| replace:: ``c``
-.. _c: http://stat.ethz.ch/R-manual/R-patched/library/base/html/c.html
+.. _c: https://stat.ethz.ch/R-manual/R-patched/library/base/html/c.html
 
 .. |aggregate| replace:: ``aggregate``
-.. _aggregate: http://finzi.psych.upenn.edu/R/library/stats/html/aggregate.html
+.. _aggregate: https://stat.ethz.ch/R-manual/R-patched/library/stats/html/aggregate.html
 
 .. |match| replace:: ``match`` / ``%in%``
-.. _match: http://finzi.psych.upenn.edu/R/library/base/html/match.html
+.. _match: https://stat.ethz.ch/R-manual/R-patched/library/base/html/match.html
 
 .. |tapply| replace:: ``tapply``
-.. _tapply: http://finzi.psych.upenn.edu/R/library/base/html/tapply.html
+.. _tapply: https://stat.ethz.ch/R-manual/R-patched/library/base/html/tapply.html
 
 .. |with| replace:: ``with``
-.. _with: http://finzi.psych.upenn.edu/R/library/base/html/with.html
+.. _with: https://stat.ethz.ch/R-manual/R-patched/library/base/html/with.html
 
 .. |subset| replace:: ``subset``
-.. _subset: http://finzi.psych.upenn.edu/R/library/base/html/subset.html
+.. _subset: https://stat.ethz.ch/R-manual/R-patched/library/base/html/subset.html
 
 .. |ddply| replace:: ``ddply``
-.. _ddply: http://www.inside-r.org/packages/cran/plyr/docs/ddply
+.. _ddply: https://cran.r-project.org/web/packages/plyr/plyr.pdf#Rfn.ddply.1
 
 .. |meltarray| replace:: ``melt.array``
-.. _meltarray: http://www.inside-r.org/packages/cran/reshape2/docs/melt.array
+.. _meltarray: https://cran.r-project.org/web/packages/reshape2/reshape2.pdf#Rfn.melt.array.1
 
 .. |meltlist| replace:: ``melt.list``
-.. meltlist: http://www.inside-r.org/packages/cran/reshape2/docs/melt.list
+.. meltlist: https://cran.r-project.org/web/packages/reshape2/reshape2.pdf#Rfn.melt.list.1
 
 .. |meltdf| replace:: ``melt.data.frame``
-.. meltdf: http://www.inside-r.org/packages/cran/reshape2/docs/melt.data.frame
+.. meltdf: https://cran.r-project.org/web/packages/reshape2/reshape2.pdf#Rfn.melt.data.frame.1
 
 .. |cast| replace:: ``cast``
-.. cast: http://www.inside-r.org/packages/cran/reshape2/docs/cast
+.. cast: https://cran.r-project.org/web/packages/reshape2/reshape2.pdf#Rfn.cast.1
 
 .. |factor| replace:: ``factor``
 .. _factor: https://stat.ethz.ch/R-manual/R-devel/library/base/html/factor.html

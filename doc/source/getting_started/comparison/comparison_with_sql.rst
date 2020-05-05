@@ -49,6 +49,20 @@ With pandas, column selection is done by passing a list of column names to your 
 Calling the DataFrame without the list of column names would display all columns (akin to SQL's
 ``*``).
 
+In SQL, you can add a calculated column:
+
+.. code-block:: sql
+
+    SELECT *, tip/total_bill as tip_rate
+    FROM tips
+    LIMIT 5;
+
+With pandas, you can use the :meth:`DataFrame.assign` method of a DataFrame to append a new column:
+
+.. ipython:: python
+
+    tips.assign(tip_rate=tips['tip'] / tips['total_bill']).head(5)
+
 WHERE
 -----
 Filtering in SQL is done via a WHERE clause.
@@ -61,7 +75,7 @@ Filtering in SQL is done via a WHERE clause.
     LIMIT 5;
 
 DataFrames can be filtered in multiple ways; the most intuitive of which is using
-`boolean indexing <https://pandas.pydata.org/pandas-docs/stable/indexing.html#boolean-indexing>`_.
+:ref:`boolean indexing <indexing.boolean>`
 
 .. ipython:: python
 
@@ -374,10 +388,10 @@ In pandas, you can use :meth:`~pandas.concat` in conjunction with
 
     pd.concat([df1, df2]).drop_duplicates()
 
-Pandas equivalents for some SQL analytic and aggregate functions
+pandas equivalents for some SQL analytic and aggregate functions
 ----------------------------------------------------------------
 
-Top N rows with offset
+Top n rows with offset
 ~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: sql
@@ -391,7 +405,7 @@ Top N rows with offset
 
     tips.nlargest(10 + 5, columns='tip').tail(10)
 
-Top N rows per group
+Top n rows per group
 ~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: sql

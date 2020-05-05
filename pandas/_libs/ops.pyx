@@ -1,7 +1,15 @@
 import operator
 
-from cpython cimport (PyObject_RichCompareBool,
-                      Py_EQ, Py_NE, Py_LT, Py_LE, Py_GT, Py_GE)
+from cpython.object cimport (
+    Py_EQ,
+    Py_GE,
+    Py_GT,
+    Py_LE,
+    Py_LT,
+    Py_NE,
+    PyObject_RichCompareBool,
+)
+
 
 import cython
 from cython import Py_ssize_t
@@ -100,7 +108,7 @@ def scalar_compare(object[:] values, object val, object op):
 
 @cython.wraparound(False)
 @cython.boundscheck(False)
-def vec_compare(object[:] left, object[:] right, object op):
+def vec_compare(ndarray[object] left, ndarray[object] right, object op):
     """
     Compare the elements of `left` with the elements of `right` pointwise,
     with the comparison operation described by `op`.
@@ -123,8 +131,7 @@ def vec_compare(object[:] left, object[:] right, object op):
         int flag
 
     if n != <Py_ssize_t>len(right):
-        raise ValueError('Arrays were different lengths: {n} vs {nright}'
-                         .format(n=n, nright=len(right)))
+        raise ValueError(f'Arrays were different lengths: {n} vs {len(right)}')
 
     if op is operator.lt:
         flag = Py_LT
@@ -224,8 +231,7 @@ def vec_binop(object[:] left, object[:] right, object op):
         object[:] result
 
     if n != <Py_ssize_t>len(right):
-        raise ValueError('Arrays were different lengths: {n} vs {nright}'
-                         .format(n=n, nright=len(right)))
+        raise ValueError(f'Arrays were different lengths: {n} vs {len(right)}')
 
     result = np.empty(n, dtype=object)
 

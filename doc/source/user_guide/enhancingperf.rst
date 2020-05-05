@@ -3,7 +3,7 @@
 {{ header }}
 
 *********************
-Enhancing Performance
+Enhancing performance
 *********************
 
 In this part of the tutorial, we will investigate how to speed up certain
@@ -15,12 +15,12 @@ when we use Cython and Numba on a test function operating row-wise on the
 
 .. _enhancingperf.cython:
 
-Cython (Writing C extensions for pandas)
+Cython (writing C extensions for pandas)
 ----------------------------------------
 
 For many use cases writing pandas in pure Python and NumPy is sufficient. In some
 computationally heavy applications however, it can be possible to achieve sizable
-speed-ups by offloading work to `cython <http://cython.org/>`__.
+speed-ups by offloading work to `cython <https://cython.org/>`__.
 
 This tutorial assumes you have refactored as much as possible in Python, for example
 by trying to remove for-loops and making use of NumPy vectorization. It's always worth
@@ -33,7 +33,7 @@ faster than the pure Python solution.
 
 .. _enhancingperf.pure:
 
-Pure python
+Pure Python
 ~~~~~~~~~~~
 
 We have a ``DataFrame`` to which we want to apply a function row-wise.
@@ -69,7 +69,7 @@ We achieve our result by using ``apply`` (row-wise):
 
 But clearly this isn't fast enough for us. Let's take a look and see where the
 time is spent during this operation (limited to the most time consuming
-four calls) using the `prun ipython magic function <http://ipython.org/ipython-doc/stable/api/generated/IPython.core.magics.execution.html#IPython.core.magics.execution.ExecutionMagics.prun>`__:
+four calls) using the `prun ipython magic function <https://ipython.readthedocs.io/en/stable/interactive/magics.html#magic-prun>`__:
 
 .. ipython:: python
 
@@ -77,11 +77,6 @@ four calls) using the `prun ipython magic function <http://ipython.org/ipython-d
 
 By far the majority of time is spend inside either ``integrate_f`` or ``f``,
 hence we'll concentrate our efforts cythonizing these two functions.
-
-.. note::
-
-  In Python 2 replacing the ``range`` with its generator counterpart (``xrange``)
-  would mean the ``range`` line would vanish. In Python 3 ``range`` is already a generator.
 
 .. _enhancingperf.plain:
 
@@ -243,9 +238,9 @@ We've gotten another big improvement. Let's check again where the time is spent:
 
 .. ipython:: python
 
-   %prun -l 4 apply_integrate_f(df['a'].to_numpy(),
-                                df['b'].to_numpy(),
-                                df['N'].to_numpy())
+   %%prun -l 4 apply_integrate_f(df['a'].to_numpy(),
+                                 df['b'].to_numpy(),
+                                 df['N'].to_numpy())
 
 As one might expect, the majority of the time is now spent in ``apply_integrate_f``,
 so if we wanted to make anymore efficiencies we must continue to concentrate our
@@ -298,7 +293,7 @@ advanced Cython techniques:
 Even faster, with the caveat that a bug in our Cython code (an off-by-one error,
 for example) might cause a segfault because memory access isn't checked.
 For more about ``boundscheck`` and ``wraparound``, see the Cython docs on
-`compiler directives <http://cython.readthedocs.io/en/latest/src/reference/compilation.html?highlight=wraparound#compiler-directives>`__.
+`compiler directives <https://cython.readthedocs.io/en/latest/src/reference/compilation.html?highlight=wraparound#compiler-directives>`__.
 
 .. _enhancingperf.numba:
 
@@ -393,15 +388,15 @@ Consider the following toy example of doubling each observation:
 .. code-block:: ipython
 
    # Custom function without numba
-   In [5]: %timeit df['col1_doubled'] = df.a.apply(double_every_value_nonumba)  # noqa E501
+   In [5]: %timeit df['col1_doubled'] = df['a'].apply(double_every_value_nonumba)  # noqa E501
    1000 loops, best of 3: 797 us per loop
 
    # Standard implementation (faster than a custom function)
-   In [6]: %timeit df['col1_doubled'] = df.a * 2
+   In [6]: %timeit df['col1_doubled'] = df['a'] * 2
    1000 loops, best of 3: 233 us per loop
 
    # Custom function with numba
-   In [7]: %timeit (df['col1_doubled'] = double_every_value_withnumba(df.a.to_numpy())
+   In [7]: %timeit df['col1_doubled'] = double_every_value_withnumba(df['a'].to_numpy())
    1000 loops, best of 3: 145 us per loop
 
 Caveats
@@ -423,13 +418,13 @@ prefer that Numba throw an error if it cannot compile a function in a way that
 speeds up your code, pass Numba the argument
 ``nopython=True`` (e.g.  ``@numba.jit(nopython=True)``). For more on
 troubleshooting Numba modes, see the `Numba troubleshooting page
-<http://numba.pydata.org/numba-doc/latest/user/troubleshoot.html#the-compiled-code-is-too-slow>`__.
+<https://numba.pydata.org/numba-doc/latest/user/troubleshoot.html#the-compiled-code-is-too-slow>`__.
 
-Read more in the `Numba docs <http://numba.pydata.org/>`__.
+Read more in the `Numba docs <https://numba.pydata.org/>`__.
 
 .. _enhancingperf.eval:
 
-Expression Evaluation via :func:`~pandas.eval`
+Expression evaluation via :func:`~pandas.eval`
 -----------------------------------------------
 
 The top-level function :func:`pandas.eval` implements expression evaluation of
@@ -465,7 +460,7 @@ engine in addition to some extensions available only in pandas.
    The larger the frame and the larger the expression the more speedup you will
    see from using :func:`~pandas.eval`.
 
-Supported Syntax
+Supported syntax
 ~~~~~~~~~~~~~~~~
 
 These operations are supported by :func:`pandas.eval`:
@@ -505,7 +500,7 @@ This Python syntax is **not** allowed:
 
 
 
-:func:`~pandas.eval` Examples
+:func:`~pandas.eval` examples
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 :func:`pandas.eval` works well with expressions containing large arrays.
@@ -601,17 +596,8 @@ This allows for *formulaic evaluation*.  The assignment target can be a
 new column name or an existing column name, and it must be a valid Python
 identifier.
 
-.. versionadded:: 0.18.0
-
 The ``inplace`` keyword determines whether this assignment will performed
 on the original ``DataFrame`` or return a copy with the new column.
-
-.. warning::
-
-   For backwards compatibility, ``inplace`` defaults to ``True`` if not
-   specified. This will change in a future version of pandas - if your
-   code depends on an inplace assignment you should update to explicitly
-   set ``inplace=True``.
 
 .. ipython:: python
 
@@ -621,7 +607,7 @@ on the original ``DataFrame`` or return a copy with the new column.
    df.eval('a = 1', inplace=True)
    df
 
-When ``inplace`` is set to ``False``, a copy of the ``DataFrame`` with the
+When ``inplace`` is set to ``False``, the default, a copy of the ``DataFrame`` with the
 new or modified columns is returned and the original frame is unchanged.
 
 .. ipython:: python
@@ -629,8 +615,6 @@ new or modified columns is returned and the original frame is unchanged.
    df
    df.eval('e = a - c', inplace=False)
    df
-
-.. versionadded:: 0.18.0
 
 As a convenience, multiple assignments can be performed by using a
 multi-line string.
@@ -647,14 +631,12 @@ The equivalent in standard Python would be
 .. ipython:: python
 
    df = pd.DataFrame(dict(a=range(5), b=range(5, 10)))
-   df['c'] = df.a + df.b
-   df['d'] = df.a + df.b + df.c
+   df['c'] = df['a'] + df['b']
+   df['d'] = df['a'] + df['b'] + df['c']
    df['a'] = 1
    df
 
-.. versionadded:: 0.18.0
-
-The ``query`` method gained the ``inplace`` keyword which determines
+The ``query`` method has a ``inplace`` keyword which determines
 whether the query modifies the original frame.
 
 .. ipython:: python
@@ -664,12 +646,7 @@ whether the query modifies the original frame.
    df.query('a > 2', inplace=True)
    df
 
-.. warning::
-
-   Unlike with ``eval``, the default value for ``inplace`` for ``query``
-   is ``False``.  This is consistent with prior versions of pandas.
-
-Local Variables
+Local variables
 ~~~~~~~~~~~~~~~
 
 You must *explicitly reference* any local variable that you want to use in an
@@ -694,7 +671,7 @@ name in an expression.
 
    a = np.random.randn()
    df.query('@a < a')
-   df.loc[a < df.a]  # same as the previous expression
+   df.loc[a < df['a']]  # same as the previous expression
 
 With :func:`pandas.eval` you cannot use the ``@`` prefix *at all*, because it
 isn't defined in that context. ``pandas`` will let you know this if you try to
@@ -714,7 +691,7 @@ standard Python.
    pd.eval('a + b')
 
 
-:func:`pandas.eval` Parsers
+:func:`pandas.eval` parsers
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 There are two different parsers and two different engines you can use as
@@ -754,7 +731,7 @@ The ``and`` and ``or`` operators here have the same precedence that they would
 in vanilla Python.
 
 
-:func:`pandas.eval` Backends
+:func:`pandas.eval` backends
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 There's also the option to make :func:`~pandas.eval` operate identical to plain
@@ -779,7 +756,7 @@ is a bit slower (not by much) than evaluating the same expression in Python
    %timeit pd.eval('df1 + df2 + df3 + df4', engine='python')
 
 
-:func:`pandas.eval` Performance
+:func:`pandas.eval` performance
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 :func:`~pandas.eval` is intended to speed up certain kinds of operations. In
@@ -804,7 +781,7 @@ computation. The two lines are two different engines.
 This plot was created using a ``DataFrame`` with 3 columns each containing
 floating point values generated using ``numpy.random.randn()``.
 
-Technical Minutia Regarding Expression Evaluation
+Technical minutia regarding expression evaluation
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Expressions that would result in an object dtype or involve datetime operations

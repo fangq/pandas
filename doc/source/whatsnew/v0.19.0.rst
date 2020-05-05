@@ -218,7 +218,7 @@ contained the values ``[0, 3]``.
 **New behavior**:
 
 .. ipython:: python
-   :okwarning:
+   :okexcept:
 
    pd.read_csv(StringIO(data), names=names)
 
@@ -264,7 +264,7 @@ Individual columns can be parsed as a ``Categorical`` using a dict specification
 
 .. _whatsnew_0190.enhancements.union_categoricals:
 
-Categorical Concatenation
+Categorical concatenation
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - A function :func:`union_categoricals` has been added for combining categoricals, see :ref:`Unioning Categoricals<categorical.union>` (:issue:`13361`, :issue:`13763`, :issue:`13846`, :issue:`14173`)
@@ -298,7 +298,7 @@ Categorical Concatenation
 
 .. _whatsnew_0190.enhancements.semi_month_offsets:
 
-Semi-Month Offsets
+Semi-month offsets
 ^^^^^^^^^^^^^^^^^^
 
 Pandas has gained new frequency offsets, ``SemiMonthEnd`` ('SM') and ``SemiMonthBegin`` ('SMS').
@@ -377,7 +377,7 @@ For ``MultiIndex``, values are dropped if any level is missing by default. Speci
 
 .. _whatsnew_0190.gbq:
 
-Google BigQuery Enhancements
+Google BigQuery enhancements
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - The :func:`read_gbq` method has gained the ``dialect`` argument to allow users to specify whether to use BigQuery's legacy SQL or BigQuery's standard SQL. See the `docs <https://pandas-gbq.readthedocs.io/en/latest/reading.html>`__ for more details (:issue:`13615`).
@@ -385,7 +385,7 @@ Google BigQuery Enhancements
 
 .. _whatsnew_0190.errstate:
 
-Fine-grained numpy errstate
+Fine-grained NumPy errstate
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Previous versions of pandas would permanently silence numpy's ufunc error handling when ``pandas`` was imported. Pandas did this in order to silence the warnings that would arise from using numpy ufuncs on missing data, which are usually represented as ``NaN`` s. Unfortunately, this silenced legitimate warnings arising in non-pandas code in the application. Starting with 0.19.0, pandas will use the ``numpy.errstate`` context manager to silence these warnings in a more fine-grained manner, only around where these operations are actually used in the pandas code base. (:issue:`13109`, :issue:`13145`)
@@ -596,7 +596,7 @@ Comparison operators
 
 Comparison operators raise ``ValueError`` when ``.index`` are different.
 
-**Previous Behavior** (``Series``):
+**Previous behavior** (``Series``):
 
 ``Series`` compared values ignoring the ``.index`` as long as both had the same length:
 
@@ -631,7 +631,7 @@ Comparison operators raise ``ValueError`` when ``.index`` are different.
 
       s1.eq(s2)
 
-**Current Behavior** (``DataFrame``, no change):
+**Current behavior** (``DataFrame``, no change):
 
 .. code-block:: ipython
 
@@ -675,7 +675,7 @@ Logical operators align both ``.index`` of left and right hand side.
 
       s1 & s2.reindex_like(s1)
 
-**Current Behavior** (``DataFrame``, no change):
+**Current behavior** (``DataFrame``, no change):
 
 .. ipython:: python
 
@@ -707,6 +707,7 @@ A ``Series`` will now correctly promote its dtype for assignment with incompat v
 
 
 .. ipython:: python
+   :okwarning:
 
    s = pd.Series()
 
@@ -1184,7 +1185,7 @@ the result of calling :func:`read_csv` without the ``chunksize=`` argument
 
 .. _whatsnew_0190.sparse:
 
-Sparse Changes
+Sparse changes
 ^^^^^^^^^^^^^^
 
 These changes allow pandas to handle sparse data with more dtypes, and for work to make a smoother experience with data handling.
@@ -1224,6 +1225,7 @@ Previously, sparse data were ``float64`` dtype by default, even if all inputs we
 As of v0.19.0, sparse data keeps the input dtype, and uses more appropriate ``fill_value`` defaults (``0`` for ``int64`` dtype, ``False`` for ``bool`` dtype).
 
 .. ipython:: python
+   :okwarning:
 
    pd.SparseArray([1, 2, 0, 0], dtype=np.int64)
    pd.SparseArray([True, False, False, False])
@@ -1235,8 +1237,7 @@ Operators now preserve dtypes
 
 - Sparse data structure now can preserve ``dtype`` after arithmetic ops (:issue:`13848`)
 
-.. ipython:: python
-   :okwarning:
+.. code-block:: python
 
    s = pd.SparseSeries([0, 2, 0, 1], fill_value=0, dtype=np.int64)
    s.dtype
@@ -1245,8 +1246,7 @@ Operators now preserve dtypes
 
 - Sparse data structure now support ``astype`` to convert internal ``dtype`` (:issue:`13900`)
 
-.. ipython:: python
-   :okwarning:
+.. code-block:: python
 
    s = pd.SparseSeries([1., 0., 2., 0.], fill_value=0)
    s
@@ -1324,7 +1324,7 @@ operations on that platform.
 
 .. _whatsnew_0190.api.other:
 
-Other API Changes
+Other API changes
 ^^^^^^^^^^^^^^^^^
 
 - ``Timestamp.to_pydatetime`` will issue a ``UserWarning`` when ``warn=True``, and the instance has a non-zero number of nanoseconds, previously this would print a message to stdout (:issue:`14101`).
@@ -1406,7 +1406,7 @@ Removal of prior version deprecations/changes
 
 .. _whatsnew_0190.performance:
 
-Performance Improvements
+Performance improvements
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
 - Improved performance of sparse ``IntIndex.intersect`` (:issue:`13082`)
@@ -1426,7 +1426,7 @@ Performance Improvements
 
 .. _whatsnew_0190.bug_fixes:
 
-Bug Fixes
+Bug fixes
 ~~~~~~~~~
 
 - Bug in ``groupby().shift()``, which could cause a segfault or corruption in rare circumstances when grouping by columns with missing values (:issue:`13813`)

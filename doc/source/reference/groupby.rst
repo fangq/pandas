@@ -36,11 +36,13 @@ Function application
 
    GroupBy.apply
    GroupBy.agg
-   GroupBy.aggregate
-   GroupBy.transform
+   SeriesGroupBy.aggregate
+   DataFrameGroupBy.aggregate
+   SeriesGroupBy.transform
+   DataFrameGroupBy.transform
    GroupBy.pipe
 
-Computations / Descriptive Stats
+Computations / descriptive stats
 --------------------------------
 .. autosummary::
    :toctree: api/

@@ -1,6 +1,7 @@
 """
 Unopinionated display configuration.
 """
+
 import locale
 import sys
 
@@ -11,7 +12,7 @@ from pandas._config import config as cf
 _initial_defencoding = None
 
 
-def detect_console_encoding():
+def detect_console_encoding() -> str:
     """
     Try to find the most capable encoding supported by the console.
     slightly modified from the way IPython handles the same issue.
@@ -25,14 +26,17 @@ def detect_console_encoding():
         pass
 
     # try again for something better
-    if not encoding or 'ascii' in encoding.lower():
+    if not encoding or "ascii" in encoding.lower():
         try:
             encoding = locale.getpreferredencoding()
-        except Exception:
+        except locale.Error:
+            # can be raised by locale.setlocale(), which is
+            #  called by getpreferredencoding
+            #  (on some systems, see stdlib locale docs)
             pass
 
     # when all else fails. this will usually be "ascii"
-    if not encoding or 'ascii' in encoding.lower():
+    if not encoding or "ascii" in encoding.lower():
         encoding = sys.getdefaultencoding()
 
     # GH#3360, save the reported defencoding at import time
@@ -50,6 +54,7 @@ pc_encoding_doc = """
     these are generally strings meant to be displayed on the console.
 """
 
-with cf.config_prefix('display'):
-    cf.register_option('encoding', detect_console_encoding(), pc_encoding_doc,
-                       validator=cf.is_text)
+with cf.config_prefix("display"):
+    cf.register_option(
+        "encoding", detect_console_encoding(), pc_encoding_doc, validator=cf.is_text
+    )

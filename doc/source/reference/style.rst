@@ -9,7 +9,7 @@ Style
 
 ``Styler`` objects are returned by :attr:`pandas.DataFrame.style`.
 
-Styler Constructor
+Styler constructor
 ------------------
 .. autosummary::
    :toctree: api/
@@ -17,7 +17,7 @@ Styler Constructor
    Styler
    Styler.from_custom_template
 
-Styler Properties
+Styler properties
 -----------------
 .. autosummary::
    :toctree: api/
@@ -26,7 +26,7 @@ Styler Properties
    Styler.template
    Styler.loader
 
-Style Application
+Style application
 -----------------
 .. autosummary::
    :toctree: api/
@@ -41,10 +41,11 @@ Style Application
    Styler.set_caption
    Styler.set_properties
    Styler.set_uuid
+   Styler.set_na_rep
    Styler.clear
    Styler.pipe
 
-Builtin Styles
+Builtin styles
 --------------
 .. autosummary::
    :toctree: api/
@@ -55,7 +56,7 @@ Builtin Styles
    Styler.background_gradient
    Styler.bar
 
-Style Export and Import
+Style export and import
 -----------------------
 .. autosummary::
    :toctree: api/

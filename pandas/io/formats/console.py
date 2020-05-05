@@ -6,15 +6,15 @@ from shutil import get_terminal_size
 
 
 def get_console_size():
-    """Return console size as tuple = (width, height).
+    """
+    Return console size as tuple = (width, height).
 
     Returns (None,None) in non-interactive session.
     """
     from pandas import get_option
 
-    display_width = get_option('display.width')
-    # deprecated.
-    display_height = get_option('display.max_rows')
+    display_width = get_option("display.width")
+    display_height = get_option("display.max_rows")
 
     # Consider
     # interactive shell terminal, can detect term size
@@ -31,8 +31,9 @@ def get_console_size():
             # sane defaults for interactive non-shell terminal
             # match default for width,height in config_init
             from pandas._config.config import get_default_val
-            terminal_width = get_default_val('display.width')
-            terminal_height = get_default_val('display.max_rows')
+
+            terminal_width = get_default_val("display.width")
+            terminal_height = get_default_val("display.max_rows")
         else:
             # pure terminal
             terminal_width, terminal_height = get_terminal_size()
@@ -48,10 +49,15 @@ def get_console_size():
 # ----------------------------------------------------------------------
 # Detect our environment
 
-def in_interactive_session():
-    """ check if we're running in an interactive shell
 
-    returns True if running under python/ipython interactive shell
+def in_interactive_session():
+    """
+    Check if we're running in an interactive shell.
+
+    Returns
+    -------
+    bool
+        True if running under python/ipython interactive shell.
     """
     from pandas import get_option
 
@@ -59,9 +65,8 @@ def in_interactive_session():
         try:
             import __main__ as main
         except ModuleNotFoundError:
-            return get_option('mode.sim_interactive')
-        return (not hasattr(main, '__file__') or
-                get_option('mode.sim_interactive'))
+            return get_option("mode.sim_interactive")
+        return not hasattr(main, "__file__") or get_option("mode.sim_interactive")
 
     try:
         return __IPYTHON__ or check_main()  # noqa
@@ -71,11 +76,15 @@ def in_interactive_session():
 
 def in_ipython_frontend():
     """
-    check if we're inside an an IPython zmq frontend
+    Check if we're inside an an IPython zmq frontend.
+
+    Returns
+    -------
+    bool
     """
     try:
         ip = get_ipython()  # noqa
-        return 'zmq' in str(type(ip)).lower()
+        return "zmq" in str(type(ip)).lower()
     except NameError:
         pass
 
